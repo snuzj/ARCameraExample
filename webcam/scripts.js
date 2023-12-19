@@ -1,76 +1,88 @@
-window.onload = function () {
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+// Create a Three.js scene
+const scene = new THREE.Scene();
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+// Create a Three.js camera
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-    // Tạo một phần tử video để hiển thị feed từ camera
-    const video = document.createElement('video');
-    document.body.appendChild(video);
+// Create a Three.js WebGLRenderer
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-    const getUserMedia = navigator.mediaDevices.getUserMedia || navigator.getUserMedia;
+// Create a video element for the webcam feed
+const video = document.createElement('video');
 
-    if (getUserMedia) {
-        getUserMedia.call(navigator.mediaDevices, { video: true })
-            .then(function (stream) {
-                video.srcObject = stream;
-                video.play();
+// Wait for the webcam to initialize
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function (stream) {
+        // Attach the webcam stream to the video element
+        video.srcObject = stream;
+        video.play();
 
-                video.onloadedmetadata = function () {
-                    const ArToolkitSource = new THREEx.ArToolkitSource({
-                        sourceType: 'webcam',
-                        source: video
-                    });
-
-                    ArToolkitSource.init(function onReady() {
-                        ArToolkitSource.onResizeElement();
-                        ArToolkitSource.copyElementSizeTo(renderer.domElement);
-                    });
-
-                    const ArToolkitContext = new THREEx.ArToolkitContext({
-                        cameraParametersUrl: 'camera_para.dat',
-                        detectionMode: 'color_and_matrix'
-                    });
-
-                    ArToolkitContext.init(function onCompleted() {
-                        camera.projectionMatrix.copy(ArToolkitContext.getProjectionMatrix());
-                    });
-
-                    const ArMarkerControls = new THREEx.ArMarkerControls(
-                        ArToolkitContext,
-                        camera,
-                        {
-                            type: 'pattern',
-                            patternUrl: 'assets/pattern_bard.patt',
-                            changeMatrixMode: 'cameraTransformMatrix'
-                        }
-                    );
-
-                    const geometry = new THREE.BoxGeometry(1, 1, 1);
-                    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-
-                    const cube = new THREE.Mesh(geometry, material);
-                    cube.position.y = geometry.parameters.height / 2;
-                    scene.add(cube);
-
-                    camera.position.z = 5;
-
-                    function animate() {
-                        requestAnimationFrame(animate);
-                        ArToolkitContext.update(ArToolkitSource.domElement);
-                        scene.visible = camera.visible;
-                        renderer.render(scene, camera);
-                    }
-
-                    animate();
-                };
-            })
-            .catch(function (error) {
-                console.error('Lỗi khi truy cập webcam:', error);
+        // Wait for video metadata to ensure correct sizing
+        video.onloadedmetadata = function () {
+            // Initialize ARToolkitSource with the webcam feed
+            const ArToolkitSource = new THREEx.ArToolkitSource({
+                sourceType: 'webcam',
+                source: video
             });
-    } else {
-        console.error('Trình duyệt không hỗ trợ getUserMedia.');
-    }
-};
+
+            // Initialize ARToolkitSource and adjust the renderer size after a delay
+            ArToolkitSource.init(function () {
+                setTimeout(function () {
+                    ArToolkitSource.onResizeElement();
+                    ArToolkitSource.copyElementSizeTo(renderer.domElement);
+                }, 2000);
+            });
+
+            // Initialize ARToolkitContext with camera parameters
+            const ArToolkitContext = new THREEx.ArToolkitContext({
+                cameraParametersUrl: 'camera_para.dat',
+                detectionMode: 'color_and_matrix'
+            });
+
+            // Initialize ARToolkitContext and set camera projection matrix
+            ArToolkitContext.init(function () {
+                camera.projectionMatrix.copy(ArToolkitContext.getProjectionMatrix());
+            });
+
+            // Create ARMarkerControls for pattern detection
+            const ArMarkerControls = new THREEx.ArMarkerControls(
+                ArToolkitContext,
+                camera,
+                {
+                    type: 'pattern',
+                    patternUrl: 'assets/pattern_bard.patt',
+                    changeMatrixMode: 'cameraTransformMatrix'
+                }
+            );
+
+            // Create a simple cube for visualization
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            const cube = new THREE.Mesh(geometry, material);
+            cube.position.y = geometry.parameters.height / 2;
+            scene.add(cube);
+
+            // Set the initial camera position
+            camera.position.z = 5;
+
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Update ARToolkitContext and set scene visibility
+                ArToolkitContext.update(ArToolkitSource.domElement);
+                scene.visible = camera.visible;
+
+                // Render the scene
+                renderer.render(scene, camera);
+            }
+
+            // Start the animation loop
+            animate();
+        };
+    })
+    .catch(function (error) {
+        console.error('Error accessing webcam:', error);
+    });
