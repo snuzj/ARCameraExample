@@ -20,41 +20,6 @@
 </div>
 
 <script>
-    function captureARScene() {
-        var iframe = document.getElementById("ar-iframe");
-
-        iframe.onload = function () {
-            var iframeWindow = iframe.contentWindow;
-            var iframeDocument = iframeWindow.document;
-
-            // Access AR Scene Elements
-            var arScene = iframeDocument.querySelector('[camera-container]');
-            var scene = arScene.scene;
-            var renderer = arScene.renderer;
-
-            // Ensure the scene is fully rendered
-            setTimeout(function () {
-                // Make sure the scene is rendered before capturing it
-                scene.visible = true;
-                renderer.render(scene, arScene.camera);
-
-                // Create a canvas and copy the rendered scene into it
-                var canvas = document.createElement('canvas');
-                canvas.width = iframe.width;  // Set the width to the iframe's width
-                canvas.height = iframe.height;  // Set the height to the iframe's height
-                var context = canvas.getContext('2d');
-                context.drawImage(renderer.domElement, 0, 0);
-
-                // Display the captured image
-                var capturedImage = document.getElementById("captured-image");
-                capturedImage.src = canvas.toDataURL();
-                capturedImage.style.display = "block";
-
-                // Optional: Handle the captured image as needed
-                alert("Chụp ảnh thành công!");
-            });
-        };
-    }
 </script>
 </body>
 </html>
