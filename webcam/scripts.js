@@ -10,7 +10,7 @@ window.onload = function () {
     const video = document.createElement('video');
     document.body.appendChild(video);
 
-    const getUserMedia = navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    const getUserMedia = navigator.mediaDevices.getUserMedia || navigator.getUserMedia;
 
     if (getUserMedia) {
         getUserMedia.call(navigator.mediaDevices, { video: true })
