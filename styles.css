@@ -1,0 +1,34 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#camera-container {
+    position: relative;
+    width: 100vw; /* Chỉnh kích thước của camera container */
+    max-width: 600px; /* Giữ camera container tối đa 600px */
+}
+
+#ar-iframe {
+    width: 100%;
+    height: 70vh; /* Tự động điều chỉnh chiều cao để giữ tỷ lệ khung hình */
+    border: 2px solid #333;
+    border-radius: 8px;
+    margin-bottom: 20px; /* Khoảng cách 20px từ nút chụp ảnh */
+}
+
+#capture-button {
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 20px; /* Khoảng cách 20px từ kết quả ảnh */
+}
+
+#captured-image {
+    width: 100%;
+    max-width: 600px; /* Giữ hình ảnh tối đa 600px */
+}

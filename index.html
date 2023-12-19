@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARcamera</title>
+    <link rel="icon" href="assets/pattern_bard.png" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js" integrity="sha512-6+YN/9o9BWrk6wSfGxQGpt3EUK6XeHi6yeHV+TYD2GR0Sj/cggRpXr1BrAQf0as6XslxomMUxXp2vIl+fv0QRA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+<div id="camera-container">
+    <iframe id="ar-iframe" src="webcam/webcam.html"></iframe>
+    <button id="capture-button" onclick="captureARScene()">Chụp ảnh</button>
+    <img id="captured-image" style="display: none;" src="" alt="">
+</div>
+
+<script>
+    function captureARScene() {
+        var iframe = document.getElementById("ar-iframe");
+
+        iframe.onload = function () {
+            var iframeWindow = iframe.contentWindow;
+            var iframeDocument = iframeWindow.document;
+
+            // Access AR Scene Elements
+            var arScene = iframeDocument.querySelector('[camera-container]');
+            var scene = arScene.scene;
+            var renderer = arScene.renderer;
+
+            // Ensure the scene is fully rendered
+            setTimeout(function () {
+                // Make sure the scene is rendered before capturing it
+                scene.visible = true;
+                renderer.render(scene, arScene.camera);
+
+                // Create a canvas and copy the rendered scene into it
+                var canvas = document.createElement('canvas');
+                canvas.width = iframe.width;  // Set the width to the iframe's width
+                canvas.height = iframe.height;  // Set the height to the iframe's height
+                var context = canvas.getContext('2d');
+                context.drawImage(renderer.domElement, 0, 0);
+
+                // Display the captured image
+                var capturedImage = document.getElementById("captured-image");
+                capturedImage.src = canvas.toDataURL();
+                capturedImage.style.display = "block";
+
+                // Optional: Handle the captured image as needed
+                alert("Chụp ảnh thành công!");
+            });
+        };
+    }
+</script>
+</body>
+</html>
