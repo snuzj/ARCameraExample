@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARcamera</title>
-    <link rel="icon" href="assets/pattern_bard.png" type="image/x-icon">
+    <link rel="icon" href="webcam/pattern_bard.png" type="image/x-icon">
     <link rel="stylesheet" href="styles.css">
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
@@ -14,12 +14,31 @@
 </head>
 <body>
 <div id="camera-container">
-    <iframe id="ar-iframe" src="webcam/webcam.html"></iframe>
-    <button id="capture-button" onclick="captureARScene()">Chụp ảnh</button>
+    <iframe id="ar-iframe"></iframe>
+    <button onclick="requestCameraPermission()">Request Camera Permission</button>
     <img id="captured-image" style="display: none;" src="" alt="">
 </div>
 
 <script>
+    function requestCameraPermission() {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (stream) {
+                console.log('Camera permission granted');
+                startAR();
+            })
+            .catch(function (err) {
+                console.error('Error accessing camera:', err);
+
+                // Handle the error, e.g., show a message to the user
+                alert('Error accessing camera. Please check your camera settings.');
+            });
+    }
+
+    function startAR() {
+        var arIframe = document.getElementById('ar-iframe');
+        arIframe.src = 'webcam/webcam.html';
+
+    }
 </script>
 </body>
 </html>

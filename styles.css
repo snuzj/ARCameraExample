@@ -8,16 +8,16 @@ body {
 
 #camera-container {
     position: relative;
-    width: 100vw; /* Chỉnh kích thước của camera container */
-    max-width: 600px; /* Giữ camera container tối đa 600px */
+    width: 80%; /* Chỉnh kích thước của camera container, bạn có thể thay đổi giá trị này theo nhu cầu */
+    max-width: 400px; /* Giữ camera container tối đa 400px */
 }
+
 
 #ar-iframe {
     width: 100%;
-    height: 70vh; /* Tự động điều chỉnh chiều cao để giữ tỷ lệ khung hình */
+    height: 70vh;
     border: 2px solid #333;
-    border-radius: 8px;
-    margin-bottom: 20px; /* Khoảng cách 20px từ nút chụp ảnh */
+    margin-bottom: 20px;
 }
 
 #capture-button {
@@ -25,10 +25,13 @@ body {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    margin-bottom: 20px; /* Khoảng cách 20px từ kết quả ảnh */
+    margin-bottom: 20px;
 }
+
 
 #captured-image {
     width: 100%;
-    max-width: 600px; /* Giữ hình ảnh tối đa 600px */
+    max-width: 100%; /* Để đảm bảo hình ảnh không vượt quá chiều rộng của phần tử cha */
+    height: auto; /* Giữ tỷ lệ khung hình */
 }
+
